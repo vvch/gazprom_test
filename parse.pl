@@ -16,22 +16,21 @@ sub parse_log {
     my ($dbh, $file_name) = @_;
     open my $fh, '<', $file_name;
     for my $line (<$fh>) {
-        # my ($date, $time, $wo_tstamp)
-        #   = split ' ', $line, 3;
-        # my ($int_id, $flag, $addr, $other)
-        #   = split ' ', $wo_tstamp;
-        my ($date, $time, $int_id, $flag, $addr, $other)
-            = split ' ', $line;
+        my ($date, $time, $wo_tstamp)
+            = split ' ', $line, 3;
+        my ($int_id, $flag, $addr, $other)
+            = split ' ', $wo_tstamp;
+        for ($int_id, $flag, $addr, $other) {
+            $_ //= '';
+        }
         my $timestamp = "$date $time";
-        my $wo_tstamp = "$int_id $flag $addr $other";
-        say "FLAG=$flag";
-        if ( $flag eq '<=' ) {  #  message arrival
-            say $date;
-            # my $id = '';
-            my ($id) = $wo_tstamp =~ m/ id=(\S)$/;
-            $id = '' if ! defined $id;
-            # TODO: eliminate duplicate void ids as primary key
-            say "ID=$id";
+        say "FLAG: $flag";
+
+        my ($id) = $wo_tstamp =~ m/ id=(\S+)$/;
+        $id //= '';
+
+        if ( $flag eq '<=' && $id ne '' ) {  #  message arrival
+            say "ID: $id";
             $dbh->do(<<"SQL", undef, $timestamp, $id, $int_id, $wo_tstamp);
                 INSERT INTO message
                     (created, id, int_id, str)
