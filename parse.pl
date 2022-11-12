@@ -18,6 +18,7 @@ sub parse_log {
     my ($dbh, $file_name) = @_;
     open my $fh, '<', $file_name;
     for my $line (<$fh>) {
+        chomp $line;
         my ($date, $time, $wo_tstamp)
             = split ' ', $line, 3;
         my ($int_id, $flag, $addr, $other)

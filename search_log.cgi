@@ -21,10 +21,10 @@ use db_log;
 sub escape_html {
     my ($s) = @_;
     for ($s) {
-        s/\"/&quot;/;
-        s/\&/&amp;/;
-        s/\</&lt;/;
-        s/\>/&gt;/;
+        s/\&/&amp;/g;
+        s/\"/&quot;/g;
+        s/\</&lt;/g;
+        s/\>/&gt;/g;
     }
     return $s;
 }
@@ -68,7 +68,7 @@ HTML
 my $addr = param('addr') || '';
 
 
-if (!defined $addr) {
+if ($addr eq '') {
     #  Search form only
     print header, template;
     exit;
