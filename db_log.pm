@@ -13,8 +13,8 @@ our @EXPORT = qw(
 use DBI;
 
 
-our $DSN = "dbi:mysql:host=127.0.0.23:database=gazprombank_test_task";
-    # "dbi:mysql:host=localhost:database=gazprombank_test_task",
+# our $DSN = "dbi:mysql:host=127.0.0.23:database=gazprombank_test_task";
+our $DSN = "dbi:mysql:host=localhost:database=gazprombank_test_task";
 our $db_user = 'cgi';
 our $db_pwd = '';
 

@@ -8,9 +8,10 @@ use autodie;
 use DBI;
 use CGI qw/:cgi charset/;
 charset('UTF-8');
+use CGI::Carp;
 
 # Debug
-use CGI::Carp 'fatalsToBrowser';
+# use CGI::Carp 'fatalsToBrowser';
 
 use FindBin;
 use lib $FindBin::Bin;

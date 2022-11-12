@@ -12,6 +12,8 @@ use lib $FindBin::Bin;
 use db_log;
 
 
+my $counter = 0;
+
 sub parse_log {
     my ($dbh, $file_name) = @_;
     open my $fh, '<', $file_name;
@@ -24,13 +26,11 @@ sub parse_log {
             $_ //= '';
         }
         my $timestamp = "$date $time";
-        say "FLAG: $flag";
 
         my ($id) = $wo_tstamp =~ m/ id=(\S+)$/;
         $id //= '';
 
         if ( $flag eq '<=' && $id ne '' ) {  #  message arrival
-            say "ID: $id";
             $dbh->do(<<"SQL", undef, $timestamp, $id, $int_id, $wo_tstamp);
                 INSERT INTO message
                     (created, id, int_id, str)
@@ -38,7 +38,6 @@ sub parse_log {
                     (?,?,?,?)
 SQL
         } else {
-            say "FLAG: $flag";
             $dbh->do(<<"SQL", undef, $timestamp, $int_id, $wo_tstamp, $addr);
                 INSERT INTO log
                     (created, int_id, str, address)
@@ -46,6 +45,8 @@ SQL
                     (?,?,?,?)
 SQL
         }
+        say "$counter lines processed"
+            if ++$counter % 500 == 0;
     }
     close $fh;
 }
@@ -56,10 +57,10 @@ $file_name //= './t/out';
 
 my $dbh = db_connect;
 
-say "Clearing old records";
-clear_log($dbh);
+# say "Clearing old records";
+# clear_log($dbh);
 
-say "Parsing $file_name...";
+say "Parsing $file_name ...";
 parse_log($dbh, $file_name);
 say "DONE.";
 
