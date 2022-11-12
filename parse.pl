@@ -7,6 +7,10 @@ use autodie;
 
 use DBI;
 
+use FindBin;
+use lib $FindBin::Bin;
+use db_log;
+
 
 sub parse_log {
     my ($dbh, $file_name) = @_;
@@ -20,7 +24,7 @@ sub parse_log {
             = split ' ', $line;
         my $timestamp = "$date $time";
         my $wo_tstamp = "$int_id $flag $addr $other";
-        say $flag;
+        say "FLAG=$flag";
         if ( $flag eq '<=' ) {  #  message arrival
             say $date;
             # my $id = '';
@@ -48,24 +52,16 @@ SQL
 }
 
 
-sub clear_log {
-    my ($dbh) = @_;
-    $dbh->do(<<"SQL");
-        DELETE FROM message
-SQL
-    $dbh->do(<<"SQL");
-        DELETE FROM log
-SQL
-}
+my $file_name = $ARGV[0];
+$file_name //= './t/out';
 
+my $dbh = db_connect;
 
-my $dbh = DBI->connect(
-    "dbi:mysql:host=127.0.0.21:database=gazprombank_test_task",
-    # "dbi:mysql:localhost:database=gazprombank_test_task", 'cgi', '',
-    'cgi', '',
-    { RaiseError => 1 }
-);
+say "Clearing old records";
+clear_log($dbh);
 
-parse_log($dbh, './t/out');
+say "Parsing $file_name...";
+parse_log($dbh, $file_name);
+say "DONE.";
 
 $dbh->disconnect;
