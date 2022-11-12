@@ -1,3 +1,7 @@
+CREATE DATABASE IF NOT EXISTS gazprombank_test_task
+USE gazprombank_test_task
+
+
 CREATE TABLE message (
 	created TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
 	id VARCHAR NOT NULL,
@@ -9,6 +13,7 @@ CREATE TABLE message (
 
 CREATE INDEX message_created_idx ON message (created);
 CREATE INDEX message_int_id_idx ON message (int_id);
+
 
 CREATE TABLE log (
 	created TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
