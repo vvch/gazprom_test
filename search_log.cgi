@@ -41,6 +41,13 @@ sub template {
 <title>
     Поиск в логе по адресу получателя
 </title>
+<style>
+    TD {
+        font-family: monospace;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+</style>
 </head>
 <body>
 <h1>
